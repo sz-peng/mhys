@@ -61,7 +61,24 @@ npm run dev
 
 #### 步骤 2：配置环境变量（重要）
 
-在 "Configure Project" 页面添加以下环境变量：
+在 "Configure Project" 页面，找到 **"Environment Variables"** 部分，添加以下环境变量：
+
+**必填变量：**
+
+```
+Name: OPENAI_API_KEY
+Value: sk-your-actual-api-key-here
+```
+
+**可选变量：**
+
+```
+Name: OPENAI_BASE_URL
+Value: https://api.openai.com/v1
+
+Name: OPENAI_MODEL
+Value: gpt-3.5-turbo
+```
 
 | 变量名 | 必填 | 说明 | 示例值 |
 |--------|------|------|--------|
@@ -69,7 +86,10 @@ npm run dev
 | `OPENAI_BASE_URL` | ❌ | API 基础地址 | `https://api.openai.com/v1` |
 | `OPENAI_MODEL` | ❌ | 使用的模型 | `gpt-3.5-turbo` |
 
-> **提示**：环境变量优先级高于前端设置，建议在 Vercel 中配置以保护密钥安全。
+> **重要提示**：
+> - 直接在输入框中填写实际的 API Key 值，不要使用 `@` 符号
+> - 环境变量配置后，需要重新部署才能生效
+> - 环境变量优先级高于前端设置，建议在 Vercel 中配置以保护密钥安全
 
 #### 步骤 3：开始部署
 

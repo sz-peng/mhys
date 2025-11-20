@@ -3,10 +3,5 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["hkg1"],
-  "env": {
-    "OPENAI_API_KEY": "@openai_api_key",
-    "OPENAI_BASE_URL": "@openai_base_url",
-    "OPENAI_MODEL": "@openai_model"
-  }
+  "regions": ["hkg1"]
 }
