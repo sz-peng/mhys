@@ -11,8 +11,8 @@ export default function Home() {
   const [result, setResult] = useState<DivinationResult | null>(null);
   const [question, setQuestion] = useState("");
 
-  const handleDivinationComplete = (num1: number, num2: number, q: string) => {
-    const hexagrams = calculateHexagrams(num1, num2);
+  const handleDivinationComplete = (num1: number, num2: number, num3: number, q: string) => {
+    const hexagrams = calculateHexagrams(num1, num2, num3);
     setResult(hexagrams);
     setQuestion(q);
     setShowResult(true);
@@ -34,11 +34,14 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-16">
+      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-0">
         {/* Hero Section */}
         <div className={`text-center space-y-8 transition-all duration-1000 ease-out ${showResult ? 'scale-75 -translate-y-12 opacity-80' : 'opacity-100'}`}>
           <div className="relative inline-block">
-            <h1 className="text-6xl md:text-8xl font-song font-bold text-stone-800 tracking-widest relative z-10">
+            <h1
+              onClick={() => setShowResult(false)}
+              className="text-6xl md:text-8xl font-song font-bold text-stone-800 tracking-widest relative z-10 cursor-pointer hover:opacity-80 transition-opacity"
+            >
               梅花易数
             </h1>
             {/* Red Seal Decoration */}
@@ -65,16 +68,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="w-full animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-both">
-              {result && <HexagramDisplay result={result} question={question} />}
-              <div className="text-center mt-12">
-                <button
-                  onClick={() => setShowResult(false)}
-                  className="group relative px-8 py-3 overflow-hidden rounded-full bg-transparent text-stone-600 transition-all duration-300 hover:text-stone-900"
-                >
-                  <span className="absolute inset-0 w-full h-full bg-stone-100/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left rounded-full" />
-                  <span className="relative font-song text-lg tracking-widest">重新起卦</span>
-                </button>
-              </div>
+              {result && <HexagramDisplay result={result} question={question} onReset={() => setShowResult(false)} />}
             </div>
           )}
         </div>

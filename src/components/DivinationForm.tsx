@@ -10,35 +10,36 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { cn } from "@/lib/utils";
 
 interface DivinationFormProps {
-    onComplete: (num1: number, num2: number, question: string) => void;
+    onComplete: (num1: number, num2: number, num3: number, question: string) => void;
 }
 
 export default function DivinationForm({ onComplete }: DivinationFormProps) {
     const [question, setQuestion] = useState("");
     const [num1, setNum1] = useState("");
     const [num2, setNum2] = useState("");
+    const [num3, setNum3] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
-    const validateAndStart = (n1: number, n2: number) => {
+    const validateAndStart = (n1: number, n2: number, n3: number) => {
         if (!question.trim()) {
             setError("请先输入您想问的事情");
             return;
         }
         setError("");
-        startDivination(n1, n2);
+        startDivination(n1, n2, n3);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!num1 || !num2) return;
-        validateAndStart(parseInt(num1), parseInt(num2));
+        if (!num1 || !num2 || !num3) return;
+        validateAndStart(parseInt(num1), parseInt(num2), parseInt(num3));
     };
 
-    const startDivination = (n1: number, n2: number) => {
+    const startDivination = (n1: number, n2: number, n3: number) => {
         setIsSubmitting(true);
         setTimeout(() => {
-            onComplete(n1, n2, question);
+            onComplete(n1, n2, n3, question);
             setIsSubmitting(false);
         }, 1000);
     };
@@ -50,9 +51,11 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
         }
         const r1 = Math.floor(Math.random() * 100) + 1;
         const r2 = Math.floor(Math.random() * 100) + 1;
+        const r3 = Math.floor(Math.random() * 100) + 1;
         setNum1(r1.toString());
         setNum2(r2.toString());
-        validateAndStart(r1, r2);
+        setNum3(r3.toString());
+        validateAndStart(r1, r2, r3);
     };
 
     const handleTime = () => {
@@ -61,10 +64,11 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
             return;
         }
         import("@/lib/meihua").then(({ generateTimeBasedNumbers }) => {
-            const { num1: t1, num2: t2 } = generateTimeBasedNumbers();
+            const { num1: t1, num2: t2, num3: t3 } = generateTimeBasedNumbers();
             setNum1(t1.toString());
             setNum2(t2.toString());
-            validateAndStart(t1, t2);
+            setNum3(t3.toString());
+            validateAndStart(t1, t2, t3);
         });
     };
 
@@ -115,7 +119,7 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
                         </div>
 
                         <div className="space-y-4 pt-2">
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="num1" className="text-stone-600">上卦数</Label>
                                     <Input
@@ -135,6 +139,18 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
                                         type="number"
                                         value={num2}
                                         onChange={(e) => setNum2(e.target.value)}
+                                        placeholder="数字"
+                                        className="font-mono text-center"
+                                        required={!isSubmitting}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="num3" className="text-stone-600">动爻数</Label>
+                                    <Input
+                                        id="num3"
+                                        type="number"
+                                        value={num3}
+                                        onChange={(e) => setNum3(e.target.value)}
                                         placeholder="数字"
                                         className="font-mono text-center"
                                         required={!isSubmitting}

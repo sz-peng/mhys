@@ -52,7 +52,7 @@ function getTrigramFromLines(lines: boolean[]): Trigram {
     return TRIGRAMS[8]; // Fallback
 }
 
-export function calculateHexagrams(num1: number, num2: number): DivinationResult {
+export function calculateHexagrams(num1: number, num2: number, num3: number): DivinationResult {
     // 1. Calculate Main Hexagram (本卦)
     const upperNum = num1;
     const lowerNum = num2;
@@ -68,9 +68,8 @@ export function calculateHexagrams(num1: number, num2: number): DivinationResult
     };
 
     // 2. Calculate Moving Line (动爻)
-    // In Meihua Yishu, usually (num1 + num2 + time) % 6. 
-    // Here we simplify to (num1 + num2) % 6 as per current input.
-    const sum = num1 + num2;
+    // User request: (num1 + num2 + num3) % 6
+    const sum = num1 + num2 + num3;
     const movingLine = sum % 6 === 0 ? 6 : sum % 6;
 
     // 3. Calculate Changed Hexagram (变卦)
@@ -124,7 +123,8 @@ export function calculateHexagrams(num1: number, num2: number): DivinationResult
         yongWuxing: yongTrigram.wuxing,
     };
 }
-export function generateTimeBasedNumbers(): { num1: number; num2: number } {
+
+export function generateTimeBasedNumbers(): { num1: number; num2: number; num3: number } {
     const now = new Date();
     // Traditional Meihua Yishu Time Method:
     // Upper Trigram: (Year + Month + Day) % 8
@@ -138,10 +138,12 @@ export function generateTimeBasedNumbers(): { num1: number; num2: number } {
     const day = now.getDate();
     const hour = now.getHours();
     const minute = now.getMinutes();
+    const second = now.getSeconds();
 
     // Use a mix of components to ensure variability
     const num1 = year + month + day;
     const num2 = hour + minute + day;
+    const num3 = hour + minute + second;
 
-    return { num1, num2 };
+    return { num1, num2, num3 };
 }

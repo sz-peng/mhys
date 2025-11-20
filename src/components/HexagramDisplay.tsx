@@ -32,7 +32,7 @@ function Trigram({ lines, name, position }: HexagramProps) {
     );
 }
 
-export default function HexagramDisplay({ result, question }: { result: DivinationResult; question: string }) {
+export default function HexagramDisplay({ result, question, onReset }: { result: DivinationResult; question: string; onReset: () => void }) {
     const [interpretation, setInterpretation] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -101,7 +101,7 @@ export default function HexagramDisplay({ result, question }: { result: Divinati
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto mt-12 space-y-8 animate-in fade-in duration-700">
+        <div className="w-full max-w-4xl mx-auto mt-0 space-y-3 animate-in fade-in duration-700">
             {/* Question Display */}
             {question && (
                 <div className="text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -111,10 +111,10 @@ export default function HexagramDisplay({ result, question }: { result: Divinati
             )}
 
             {/* Hexagrams Grid */}
-            <div className="grid grid-cols-3 gap-8 p-8 bg-white/50 backdrop-blur-sm rounded-xl border border-stone-200 shadow-xl shadow-stone-200/50">
+            <div className="grid grid-cols-3 gap-4 p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-stone-200 shadow-xl shadow-stone-200/50">
                 <div className="flex flex-col items-center animate-in zoom-in-95 duration-700 delay-100 fill-mode-both">
                     <h3 className="text-stone-800 font-serif mb-4">本卦</h3>
-                    <div className="flex flex-col bg-white p-4 rounded-lg shadow-sm border border-stone-100 relative">
+                    <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm border border-stone-100 relative">
                         {/* Ti/Yong Indicators for Main Hexagram */}
                         {result.tiTrigram && (
                             <>
@@ -147,7 +147,7 @@ export default function HexagramDisplay({ result, question }: { result: Divinati
 
                 <div className="flex flex-col items-center animate-in zoom-in-95 duration-700 delay-300 fill-mode-both">
                     <h3 className="text-stone-800 font-serif mb-4">互卦</h3>
-                    <div className="flex flex-col bg-white p-4 rounded-lg shadow-sm border border-stone-100 opacity-70">
+                    <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm border border-stone-100 opacity-70">
                         <Trigram lines={result.mutual.upper.lines} name={result.mutual.upper.name} position="top" />
                         <Trigram lines={result.mutual.lower.lines} name={result.mutual.lower.name} position="bottom" />
                     </div>
@@ -161,7 +161,7 @@ export default function HexagramDisplay({ result, question }: { result: Divinati
 
                 <div className="flex flex-col items-center animate-in zoom-in-95 duration-700 delay-500 fill-mode-both">
                     <h3 className="text-stone-800 font-serif mb-4">变卦</h3>
-                    <div className="flex flex-col bg-white p-4 rounded-lg shadow-sm border border-stone-100">
+                    <div className="flex flex-col bg-white p-3 rounded-lg shadow-sm border border-stone-100">
                         <Trigram lines={result.changed.upper.lines} name={result.changed.upper.name} position="top" />
                         <Trigram lines={result.changed.lower.lines} name={result.changed.lower.name} position="bottom" />
                     </div>
@@ -175,15 +175,23 @@ export default function HexagramDisplay({ result, question }: { result: Divinati
             </div>
 
             {/* AI Interpretation Section */}
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-4 mt-4">
                 {!interpretation && !isLoading && (
-                    <button
-                        onClick={handleInterpret}
-                        className="flex items-center gap-2 px-8 py-3 bg-stone-800 hover:bg-stone-700 text-white rounded-full shadow-lg hover:shadow-stone-800/20 transition-all duration-300 group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 fill-mode-both"
-                    >
-                        <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
-                        <span>大师解卦</span>
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={handleInterpret}
+                            className="flex items-center gap-2 px-8 py-3 bg-stone-800 hover:bg-stone-700 text-white rounded-full shadow-lg hover:shadow-stone-800/20 transition-all duration-300 group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 fill-mode-both"
+                        >
+                            <Sparkles className="w-4 h-4 group-hover:animate-pulse" />
+                            <span>毛毛狐解卦</span>
+                        </button>
+                        <button
+                            onClick={onReset}
+                            className="flex items-center gap-2 px-8 py-3 bg-stone-800 hover:bg-stone-700 text-white rounded-full shadow-lg hover:shadow-stone-800/20 transition-all duration-300 group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-700 fill-mode-both"
+                        >
+                            <span>重新起卦</span>
+                        </button>
+                    </div>
                 )}
 
                 {isLoading && (
