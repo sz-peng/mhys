@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { getHistory, clearHistory, DivinationRecord } from '@/lib/history';
+import { getHistory, clearHistory, deleteRecord, DivinationRecord } from '@/lib/history';
 import { Trash2, History, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
@@ -24,6 +24,14 @@ export function HistoryDialog({ open, onOpenChange }: HistoryDialogProps) {
         if (confirm('确定要清空所有占卜记录吗？')) {
             clearHistory();
             setHistory([]);
+        }
+    };
+
+    const handleDelete = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        if (confirm('确定要删除这条记录吗？')) {
+            deleteRecord(id);
+            setHistory(prev => prev.filter(record => record.id !== id));
         }
     };
 
@@ -89,9 +97,20 @@ export function HistoryDialog({ open, onOpenChange }: HistoryDialogProps) {
                                             </span>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" size="sm" className="mt-1">
-                                        {expandedId === record.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                                    </Button>
+                                    <div className="flex flex-col gap-2">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={(e) => handleDelete(e, record.id)}
+                                            className="text-stone-400 hover:text-red-600 hover:bg-red-50 h-8 w-8 p-0"
+                                            title="删除"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                            {expandedId === record.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 {expandedId === record.id && (

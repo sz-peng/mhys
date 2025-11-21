@@ -5,9 +5,9 @@ import { Settings, X } from "lucide-react";
 
 export default function SettingsDialog() {
     const [isOpen, setIsOpen] = useState(false);
-    const [baseUrl, setBaseUrl] = useState("https://api.openai.com/v1");
+    const [baseUrl, setBaseUrl] = useState("");
     const [apiKey, setApiKey] = useState("");
-    const [model, setModel] = useState("gpt-3.5-turbo");
+    const [model, setModel] = useState("");
 
     useEffect(() => {
         const storedBaseUrl = localStorage.getItem("meihua_api_base_url");
@@ -23,6 +23,17 @@ export default function SettingsDialog() {
         localStorage.setItem("meihua_api_key", apiKey);
         localStorage.setItem("meihua_api_model", model);
         setIsOpen(false);
+    };
+
+    const handleReset = () => {
+        localStorage.removeItem("meihua_api_base_url");
+        localStorage.removeItem("meihua_api_key");
+        localStorage.removeItem("meihua_api_model");
+        setBaseUrl("");
+        setApiKey("");
+        setModel("");
+        // Optional: Close dialog or keep open to show it's cleared
+        // setIsOpen(false); 
     };
 
     return (
@@ -93,6 +104,12 @@ export default function SettingsDialog() {
                                 className="px-4 py-2 text-sm text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
                             >
                                 取消
+                            </button>
+                            <button
+                                onClick={handleReset}
+                                className="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200"
+                            >
+                                恢复默认
                             </button>
                             <button
                                 onClick={handleSave}

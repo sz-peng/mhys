@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Sparkles, Loader2, BookOpen } from "lucide-react";
+import { Sparkles, Loader2, BookOpen, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { DivinationResult } from "@/lib/meihua";
 
@@ -36,6 +36,18 @@ export default function HexagramDisplay({ result, question, onReset, onInterpret
     const [interpretation, setInterpretation] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopy = async () => {
+        if (!interpretation) return;
+        try {
+            await navigator.clipboard.writeText(interpretation);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy:", err);
+        }
+    };
 
     const handleInterpret = async () => {
         const apiKey = localStorage.getItem("meihua_api_key");
@@ -215,9 +227,28 @@ export default function HexagramDisplay({ result, question, onReset, onInterpret
 
                 {interpretation && (
                     <div className="w-full bg-white/80 backdrop-blur-sm rounded-xl border border-stone-200 p-8 shadow-lg animate-in slide-in-from-bottom-4 duration-700">
-                        <div className="flex items-center gap-2 mb-6 border-b border-stone-100 pb-4">
-                            <BookOpen className="w-5 h-5 text-stone-400" />
-                            <h3 className="text-xl font-serif font-bold text-stone-800">卦象解读</h3>
+                        <div className="flex items-center justify-between mb-6 border-b border-stone-100 pb-4">
+                            <div className="flex items-center gap-2">
+                                <BookOpen className="w-5 h-5 text-stone-400" />
+                                <h3 className="text-xl font-serif font-bold text-stone-800">卦象解读</h3>
+                            </div>
+                            <button
+                                onClick={handleCopy}
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-stone-500 hover:text-stone-800 hover:bg-stone-100 rounded-md transition-colors"
+                                title="复制解读内容"
+                            >
+                                {isCopied ? (
+                                    <>
+                                        <Check className="w-4 h-4 text-green-600" />
+                                        <span className="text-green-600">已复制</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Copy className="w-4 h-4" />
+                                        <span>复制</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                         <div className="prose prose-stone max-w-none font-serif leading-loose text-stone-600">
                             <ReactMarkdown>{interpretation}</ReactMarkdown>

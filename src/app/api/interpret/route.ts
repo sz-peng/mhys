@@ -4,10 +4,10 @@ export async function POST(req: Request) {
     try {
         const { prompt, apiKey: reqApiKey, baseUrl: reqBaseUrl, model: reqModel, stream } = await req.json();
 
-        // Prioritize Environment Variables, fallback to Request Body
-        const apiKey = process.env.OPENAI_API_KEY || reqApiKey;
-        const baseUrl = process.env.OPENAI_BASE_URL || reqBaseUrl || "https://api.openai.com/v1";
-        const model = process.env.OPENAI_MODEL || reqModel || "gpt-3.5-turbo";
+        // Prioritize Request Body (Frontend Settings), fallback to Environment Variables
+        const apiKey = reqApiKey || process.env.OPENAI_API_KEY;
+        const baseUrl = reqBaseUrl || process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+        const model = reqModel || process.env.OPENAI_MODEL || "gpt-3.5-turbo";
 
         if (!apiKey) {
             return NextResponse.json(
