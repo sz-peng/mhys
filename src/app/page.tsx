@@ -29,7 +29,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden selection:bg-stone-200 selection:text-stone-900">
+    <main className="flex-1 h-full flex flex-col items-center justify-center p-4 relative overflow-hidden selection:bg-stone-200 selection:text-stone-900">
       <SettingsDialog />
       <button
         onClick={() => setIsHistoryOpen(true)}
@@ -47,18 +47,18 @@ export default function Home() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-stone-100/30 rounded-full blur-[80px]" />
 
         {/* Vertical Chinese Text Decoration (Optional, subtle) */}
-        <div className="absolute top-24 right-12 text-[10rem] font-song text-stone-50 opacity-[0.03] select-none writing-vertical-rl">
+        <div className="hidden md:block absolute top-24 right-12 text-[10rem] font-song text-stone-50 opacity-[0.03] select-none writing-vertical-rl">
           梅花易数
         </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-0">
+      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-8">
         {/* Hero Section */}
         <div className={`text-center space-y-8 transition-all duration-1000 ease-out ${showResult ? 'scale-75 -translate-y-12 opacity-80' : 'opacity-100'}`}>
           <div className="relative inline-block">
             <h1
               onClick={() => setShowResult(false)}
-              className="text-6xl md:text-8xl font-song font-bold text-stone-800 tracking-widest relative z-10 cursor-pointer hover:opacity-80 transition-opacity"
+              className="text-5xl md:text-8xl font-song font-bold text-stone-800 tracking-widest relative z-10 cursor-pointer hover:opacity-80 transition-opacity"
             >
               梅花易数
             </h1>
@@ -92,9 +92,7 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className="absolute bottom-6 text-stone-300 text-xs font-song tracking-[0.2em]">
-        © 2025 梅花易数 · 观象授时
-      </footer>
+
     </main>
   );
 }
