@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "梅花易数 - 观象授时",
+  title: "梅花易数 | 观象占验",
   description: "基于梅花易数的在线占卜工具",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
