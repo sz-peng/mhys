@@ -24,8 +24,8 @@ export default function Home() {
     }
   };
 
-  const handleDivinationComplete = (num1: number, num2: number, num3: number, q: string) => {
-    const hexagrams = calculateHexagrams(num1, num2, num3);
+  const handleDivinationComplete = (num1: number, num2: number, num3: number, q: string, movingLine?: number) => {
+    const hexagrams = calculateHexagrams(num1, num2, num3, movingLine);
     setResult(hexagrams);
     setQuestion(q);
     setShowResult(true);

@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { cn } from "@/lib/utils";
 
 interface DivinationFormProps {
-    onComplete: (num1: number, num2: number, num3: number, question: string) => void;
+    onComplete: (num1: number, num2: number, num3: number, question: string, movingLine?: number) => void;
 }
 
 export default function DivinationForm({ onComplete }: DivinationFormProps) {
@@ -21,25 +21,26 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
-    const validateAndStart = (n1: number, n2: number, n3: number) => {
+    const validateAndStart = (n1: number, n2: number, n3: number, movingLine?: number) => {
         if (!question.trim()) {
             setError("请先输入您想问的事情");
             return;
         }
         setError("");
-        startDivination(n1, n2, n3);
+        startDivination(n1, n2, n3, movingLine);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!num1 || !num2 || !num3) return;
+        // Manual input doesn't have explicit movingLine, calculates from sum
         validateAndStart(parseInt(num1), parseInt(num2), parseInt(num3));
     };
 
-    const startDivination = (n1: number, n2: number, n3: number) => {
+    const startDivination = (n1: number, n2: number, n3: number, movingLine?: number) => {
         setIsSubmitting(true);
         setTimeout(() => {
-            onComplete(n1, n2, n3, question);
+            onComplete(n1, n2, n3, question, movingLine);
             setIsSubmitting(false);
         }, 1000);
     };
@@ -64,11 +65,11 @@ export default function DivinationForm({ onComplete }: DivinationFormProps) {
             return;
         }
         import("@/lib/meihua").then(({ generateTimeBasedNumbers }) => {
-            const { num1: t1, num2: t2, num3: t3 } = generateTimeBasedNumbers();
+            const { num1: t1, num2: t2, num3: t3, movingLine } = generateTimeBasedNumbers();
             setNum1(t1.toString());
             setNum2(t2.toString());
             setNum3(t3.toString());
-            validateAndStart(t1, t2, t3);
+            validateAndStart(t1, t2, t3, movingLine);
         });
     };
 

@@ -1,3 +1,5 @@
+import { Lunar } from "lunar-javascript";
+
 export type Trigram = {
     id: number;
     name: string;
@@ -52,7 +54,7 @@ function getTrigramFromLines(lines: boolean[]): Trigram {
     return TRIGRAMS[8]; // Fallback
 }
 
-export function calculateHexagrams(num1: number, num2: number, num3: number): DivinationResult {
+export function calculateHexagrams(num1: number, num2: number, num3: number, movingLineIndex?: number): DivinationResult {
     // 1. Calculate Main Hexagram (本卦)
     const upperNum = num1;
     const lowerNum = num2;
@@ -68,9 +70,15 @@ export function calculateHexagrams(num1: number, num2: number, num3: number): Di
     };
 
     // 2. Calculate Moving Line (动爻)
-    // User request: (num1 + num2 + num3) % 6
-    const sum = num1 + num2 + num3;
-    const movingLine = sum % 6 === 0 ? 6 : sum % 6;
+    // If movingLineIndex is provided (e.g. from Time Divination), use it.
+    // Otherwise fallback to classic number method: (num1 + num2 + num3) % 6
+    let movingLine: number;
+    if (movingLineIndex !== undefined) {
+        movingLine = movingLineIndex;
+    } else {
+        const sum = num1 + num2 + num3;
+        movingLine = sum % 6 === 0 ? 6 : sum % 6;
+    }
 
     // 3. Calculate Changed Hexagram (变卦)
     const changedLines = [...mainLines];
@@ -124,26 +132,38 @@ export function calculateHexagrams(num1: number, num2: number, num3: number): Di
     };
 }
 
-export function generateTimeBasedNumbers(): { num1: number; num2: number; num3: number } {
+export function generateTimeBasedNumbers(): { num1: number; num2: number; num3: number; movingLine: number } {
     const now = new Date();
-    // Traditional Meihua Yishu Time Method:
+    const lunar = Lunar.fromDate(now);
+
+    // Traditional Meihua Yishu Time Method (Lunar):
+    // Year: Earthly Branch Index (1-12) (Zi=1...Hai=12)
+    // lunar.getYearZhiIndex() returns 0 for Zi, 11 for Hai. So add 1.
+    const yearZhi = lunar.getYearZhiIndex() + 1;
+
+    // Month: Lunar Month (1-12)
+    const month = lunar.getMonth();
+
+    // Day: Lunar Day (1-30)
+    const day = lunar.getDay();
+
+    // Hour: Earthly Branch Index (1-12) (Zi=1...Hai=12)
+    // lunar.getTimeZhiIndex() returns 0 for Zi, 11 for Hai. So add 1.
+    const timeZhi = lunar.getTimeZhiIndex() + 1;
+
     // Upper Trigram: (Year + Month + Day) % 8
-    // Lower Trigram: (Year + Month + Day + Hour) % 8
-    // Moving Line: (Year + Month + Day + Hour) % 6
+    const num1 = yearZhi + month + day;
 
-    // Simplified for modern usage (using lunar calendar mapping would be ideal but complex for MVP):
-    // We use standard numbers from date components
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
+    // Lower Trigram: (Upper Sum + Time) % 8
+    // Note: num2 here represents the sum "Years+Month+Day+Hour" effectively for the purpose of the modulo in calculation
+    const num2 = num1 + timeZhi;
 
-    // Use a mix of components to ensure variability
-    const num1 = year + month + day;
-    const num2 = hour + minute + day;
-    const num3 = hour + minute + second;
+    // Moving Line: (Upper Sum + Time) % 6
+    const totalSum = num1 + timeZhi;
+    let movingLine = totalSum % 6;
+    if (movingLine === 0) movingLine = 6;
 
-    return { num1, num2, num3 };
+    // num3 is returned as timeZhi just for display/reference, 
+    // but the actual calculation should rely on the explicit 'movingLine' we return.
+    return { num1, num2, num3: timeZhi, movingLine };
 }
