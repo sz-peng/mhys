@@ -51,6 +51,7 @@ export function isDbEnabled(): boolean {
 
 // 创建数据库连接（仅在启用时）
 let _sql: postgres.Sql | null = null;
+let _dbInitialized = false;
 
 export function getDb(): postgres.Sql {
     if (!isDbEnabled()) {
@@ -63,6 +64,7 @@ export function getDb(): postgres.Sql {
             max: 10,
             idle_timeout: 20,
             connect_timeout: 10,
+            onnotice: () => { },  // 静默 NOTICE 消息
         });
     }
 
@@ -91,9 +93,10 @@ export interface DbSettings {
     updated_at: Date;
 }
 
-// 初始化数据库表
+// 初始化数据库表（只执行一次）
 export async function initDatabase(): Promise<void> {
-    if (!isDbEnabled()) return;
+    if (!isDbEnabled() || _dbInitialized) return;
+    _dbInitialized = true;
 
     const sql = getDb();
 
