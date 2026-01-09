@@ -64,7 +64,7 @@ export function HistoryDialog({ open, onOpenChange }: HistoryDialogProps) {
                             variant="ghost"
                             size="sm"
                             onClick={handleClear}
-                            className="text-stone-500 hover:text-red-600 hover:bg-red-50"
+                            className="text-stone-500 hover:text-red-600 hover:bg-red-50 mr-6"
                         >
                             <Trash2 className="w-4 h-4 mr-1" />
                             清空
