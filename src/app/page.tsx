@@ -18,9 +18,9 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
-  const handleInterpretationComplete = (interpretation: string) => {
+  const handleInterpretationComplete = async (interpretation: string) => {
     if (result && question) {
-      saveRecord(question, result, interpretation);
+      await saveRecord(question, result, interpretation);
     }
   };
 
