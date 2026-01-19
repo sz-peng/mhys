@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Sparkles, Loader2, BookOpen, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { DivinationResult } from "@/lib/meihua";
+import { Lunar } from "lunar-javascript";
 import InterpretationModal from "./InterpretationModal";
 
 interface HexagramProps {
@@ -33,6 +34,14 @@ function Trigram({ lines, name, position }: HexagramProps) {
     );
 }
 
+function getLunarSeason(month: number): string {
+    if (month >= 1 && month <= 3) return "春";
+    if (month >= 4 && month <= 6) return "夏";
+    if (month >= 7 && month <= 9) return "秋";
+    if (month >= 10 && month <= 12) return "冬";
+    return "未知";
+}
+
 export default function HexagramDisplay({ result, question, onReset, onInterpretationComplete }: { result: DivinationResult; question: string; onReset: () => void; onInterpretationComplete?: (interpretation: string) => void }) {
     const [interpretation, setInterpretation] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -55,8 +64,30 @@ export default function HexagramDisplay({ result, question, onReset, onInterpret
         setInterpretation("");
 
         try {
+            const now = new Date();
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "local";
+            const timeText = now.toLocaleString("zh-CN", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+            });
+            const lunar = Lunar.fromDate(now);
+            const lunarMonth = lunar.getMonth();
+            const lunarDay = lunar.getDay();
+            const lunarSeason = getLunarSeason(lunarMonth);
+
             const prompt = `
         所问之事：${question || "未指定（请进行通用运势解读）"}
+
+        【时间信息】
+        公历时间：${timeText}（时区：${timeZone}）
+        农历日期：${lunarMonth}月${lunarDay}日
+        农历季节：${lunarSeason}
+        农历季节口径：农历1-3春、4-6夏、7-9秋、10-12冬
         
         【卦象数据】
         本卦：${result.main.upper.name}${result.main.lower.name} (上${result.main.upper.nature}/下${result.main.lower.nature})
